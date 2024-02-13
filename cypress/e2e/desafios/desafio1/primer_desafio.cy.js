@@ -8,7 +8,7 @@ describe('Cypress Avanzado - Desafio 1', () => {
 
   it('agregar buscar y eliminar un producto', () => {
     //Ingresando a OnlineShop 
-    cy.get('a[data-cy="onlineshoplink"]').click()
+    cy.get('a[data-cy="onlineshoplink"]', { timeout: TIMEOUT }).click()
 
     //Agregando producto nuevo
     cy.contains('Add Product').click()    
