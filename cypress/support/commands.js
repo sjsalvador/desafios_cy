@@ -26,7 +26,7 @@
 
 //import usuario from "../fixtures/data_des1";
 
-Cypress.Commands.add("login", () => {
+Cypress.Commands.add("login1", () => {
     cy.fixture('dataLogin').then((login) => {      
     cy.visit('https://pushing-it.vercel.app/')
     cy.contains('Iniciá sesión').dblclick({ force: true })
@@ -34,4 +34,22 @@ Cypress.Commands.add("login", () => {
     cy.get('input[data-cy="pass"]').type(login.pass);
     cy.get('button[data-cy="submitForm"]').click();
 });
+});
+
+import './requests/product'
+
+Cypress.Commands.add('login', (usuario, password) => {
+    cy.request({
+        method: "POST",
+        url: "https://pushing-it.onrender.com/api/login",
+        body: {
+            username: Cypress.env().usuario,
+            password: Cypress.env().password,
+        },
+    }).then(respuesta => {
+        window.localStorage.setItem('token', respuesta.body.token);
+        window.localStorage.setItem('user', respuesta.body.user.username);
+        window.localStorage.setItem('userId', respuesta.body.user._id);
+        Cypress.env().token = respuesta.body.token;
+    });
 });

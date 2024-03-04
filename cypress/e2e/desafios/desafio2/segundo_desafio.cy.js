@@ -1,41 +1,36 @@
-import datosProducto from "./datosProducto";
+import datosProducto from "./datos";
 import { TIMEOUT } from "../../../fixtures/constantes"
 
-describe('Cypress Avanzado - Desafio 2', () => {
-  beforeEach(() => {
-    cy.login();
-  })
+describe("Desafio 2", () => {
 
-  it('agregar buscar y eliminar un producto', () => {
-    //Ingresando a OnlineShop 
+  before(() => {
+    cy.login();
+    cy.visit('');
+  });
+
+  it('Buscar, eliminar, Crea y Editar mediante HTTP request', () => {
+    cy.eliminarProducto(datosProducto.producto.id);
+    cy.crearProducto(datosProducto.producto);
+    cy.editarProducto(datosProducto.producto.id);
+
+  });
+
+  it('Verificar datos editados', () => {
+    //Ingresando a OnlineShop
+    cy.login1();
     cy.get('a[data-cy="onlineshoplink"]', { timeout: TIMEOUT }).click()
 
-    //Agregando producto nuevo
-    cy.contains('Add Product').click()    
-    cy.get('input[data-cy="productName"]').type(datosProducto.nombre)
-    cy.get('input[data-cy="productPrice"]').type(datosProducto.precio)
-    cy.get('input[data-cy="productCard"]').type(datosProducto.url)
-    cy.get('input[data-cy="productID"]').type(datosProducto.id)
-    cy.contains('Create product').click()
-    cy.contains('button', 'Close' , { timeout: TIMEOUT } ).click();
-
     //Busco producto por su ID
-    cy.get('[data-cy="search-type"]' , { timeout: TIMEOUT }).select('ID')
-    cy.get('input[data-cy="search-bar"]').type(`${datosProducto.id}{enter}`)
-    cy.get(`[data-cy="delete-${datosProducto.id}"]` , { timeout: TIMEOUT }).should('exist');
+    cy.get('[data-cy="search-type"]', { timeout: TIMEOUT }).select('ID')
+    cy.get('input[data-cy="search-bar"]').type(`${datosProducto.producto.id}{enter}`)
+    cy.get('[data-cy="name"]').should('be.visible');
 
-
-    //Eliminando el producto
-    cy.get(`[data-cy="delete-${datosProducto.id}"]`, { timeout: TIMEOUT }).click()
-    cy.contains('button', 'Delete' , { timeout: TIMEOUT }).click();
-    cy.contains('button', 'Close' , { timeout: TIMEOUT }).click();
-
-    //Busco nuevamente el producto por su ID
-    cy.get('[data-cy="search-type"]' , { timeout: TIMEOUT }).select('ID')
-    cy.get('input[data-cy="search-bar"]').clear().type(`${datosProducto.id}{enter}`)
-    cy.get(`[data-cy="delete-${datosProducto.id}"]`, { timeout: TIMEOUT }).should('not.exist');
-
+    // Verifico los datos modificados en la edicion    
+    cy.get('[data-cy="name"]').should('contain', `${datosProducto.producto2.name}`);
+    cy.get('[data-cy="price"]').should('contain', `${datosProducto.producto2.price}`);
 
   })
-})
   
+})
+
+

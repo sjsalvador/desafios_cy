@@ -1,9 +1,9 @@
-import datosProducto from "./datosProducto";
+import datosProducto from "./datos";
 import { TIMEOUT } from "../../../fixtures/constantes"
 
 describe('Cypress Avanzado - Desafio 1', () => {
   beforeEach(() => {
-    cy.login();
+    cy.login1();
   })
 
   it('agregar buscar y eliminar un producto', () => {
@@ -17,7 +17,7 @@ describe('Cypress Avanzado - Desafio 1', () => {
     cy.get('input[data-cy="productCard"]').type(datosProducto.url)
     cy.get('input[data-cy="productID"]').type(datosProducto.id)
     cy.contains('Create product').click()
-    cy.contains('button', 'Close' , { timeout: TIMEOUT } ).click();
+    // cy.contains('button', 'Close' , { timeout: TIMEOUT } ).click();
 
     //Busco producto por su ID
     cy.get('[data-cy="search-type"]' , { timeout: TIMEOUT }).select('ID')
