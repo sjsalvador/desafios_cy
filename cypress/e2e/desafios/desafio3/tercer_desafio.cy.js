@@ -52,24 +52,24 @@ describe("Desafio 3", () => {
     //Hago el Checkout
     cy.get('[data-cy="goCheckout"]', { timeout: TIMEOUT }).click();
 
-    //Completo datos de la compra
+    //Completo datos de la compra y reviso datos en la base de datos
     cy.get('[data-cy="firstName"]', { timeout: TIMEOUT }).type(datosCard.card.firstName);
     cy.get('[data-cy="lastName"]', { timeout: TIMEOUT }).type(datosCard.card.lastName);
     cy.get('[data-cy="cardNumber"]', { timeout: TIMEOUT }).type(datosCard.card.cardNumber);
     cy.get('[data-cy="purchase"]', { timeout: TIMEOUT }).click();
-    cy.get('[data-cy="sellId"]', { timeout: TIMEOUT }).invoke('text').as('sellId');
-    cy.get('[data-cy="thankYou"]', { timeout: TIMEOUT }).click();
+    cy.get('[data-cy="sellId"]', { timeout: TIMEOUT }).invoke('text').then(function (sellId) {
+      this.sellId = sellId
+      const query = `SELECT * FROM public."purchaseProducts" INNER JOIN public."sells" ON public."purchaseProducts".sell_id = public."sells".id WHERE sell_id=${this.sellId};`
+      cy.task("connectDB", query).then(function (result) {
+      cy.log(result);
+      expect(result[0].id).to.equal(parseInt(this.sellId));
+      expect(result[1].id).to.equal(parseInt(this.sellId));
+      expect(result[0].cardNumber).to.equal(datosCard.card.cardNumber);
+      expect(result[1].cardNumber).to.equal(datosCard.card.cardNumber);
 
   })
-
-  it('Verificar la orden de compra que se registró en la base de datos SQL', function () {
-    const query = `SELECT * FROM public."purchaseProducts" INNER JOIN public."sells" ON public."purchaseProducts".sell_id = public."sells".id WHERE sell_id=${this.sellId};`
-    cy.task("connectDB", query).then(result => {
-      cy.log(result)
-    });
-
-
-  })
+})
+})
 })
 
 
