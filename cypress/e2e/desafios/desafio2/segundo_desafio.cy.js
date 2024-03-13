@@ -8,12 +8,10 @@ describe("Desafio 2", () => {
     cy.visit('');
   });
 
-  it('Buscar, eliminar, Crea y Editar mediante HTTP request', () => {
+  it('Buscar, eliminar, crear y editar mediante HTTP request', () => {
     cy.eliminarProducto(datosProducto.producto.id);
     cy.crearProducto(datosProducto.producto);
-    cy.editarProducto(datosProducto.producto.id);
-
-  });
+    cy.editarProducto(datosProducto.producto2.id , datosProducto.producto2);
 
   it('Verificar datos editados', () => {
     //Ingresando a OnlineShop
@@ -32,5 +30,8 @@ describe("Desafio 2", () => {
   })
   
 })
+})
+
+
 
 

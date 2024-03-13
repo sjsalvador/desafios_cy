@@ -27,7 +27,7 @@ Cypress.Commands.add('crearProducto', (body) => {
     });
 });
 
-Cypress.Commands.add('editarProducto', (id) => {
+Cypress.Commands.add('editarProducto', (id, body) => {
     cy.request({
         method: "GET",
         url: `${Cypress.env().baseUrlAPI}/products?id=${id}`,
@@ -39,11 +39,7 @@ Cypress.Commands.add('editarProducto', (id) => {
         cy.request({
             method: "PUT",
             url: `${Cypress.env().baseUrlAPI}/product/${product._id}`,
-            body: {
-                name: "remerita roja",
-                price: "25000",
-                img: "https://i.ebayimg.com/images/g/7KcAAOSwOpdbompi/s-l960.jpg",
-            },
+            body: body,
             headers: {
                 Authorization: `Bearer ${Cypress.env().token}`,
             }
@@ -51,3 +47,19 @@ Cypress.Commands.add('editarProducto', (id) => {
     });
 
 });
+
+
+Cypress.Commands.add('buscarProducto', (productoId, productoName) => {
+    const TIMEOUT = 60000; 
+    cy.get('[data-cy="search-type"]', { timeout: TIMEOUT }).select('ID');
+    cy.get('input[data-cy="search-bar"]').clear().type(`${productoId}{enter}`);
+    cy.get('[data-cy="name"]', { timeout: TIMEOUT }).should('contain', `${productoName}`);   
+});
+
+
+Cypress.Commands.add('agregarCarrito', () => {
+    const TIMEOUT = 60000; 
+    cy.get('[data-cy^="add-to-cart-"]').eq(0).click();
+    cy.get('[data-cy="closeModal"]').click();
+});
+
